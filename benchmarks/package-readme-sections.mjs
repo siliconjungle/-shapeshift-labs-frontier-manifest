@@ -168,6 +168,14 @@ if (!delegated) {
     "repoUrl": "https://github.com/siliconjungle/-shapeshift-labs-frontier-effects"
   },
   {
+    "id": "frontier-auth",
+    "name": "@shapeshift-labs/frontier-auth",
+    "role": "Frontier-native auth contracts for providers, sessions, profile completeness, route and resource gates, account-linking policy, token issue/verify plans, runtime grants, audit events, registry graphs, lint resources, and auth evidence without owning app secrets, crypto, storage, or provider SDKs.",
+    "npmUrl": "https://www.npmjs.com/package/@shapeshift-labs/frontier-auth",
+    "repoName": "siliconjungle/-shapeshift-labs-frontier-auth",
+    "repoUrl": "https://github.com/siliconjungle/-shapeshift-labs-frontier-auth"
+  },
+  {
     "id": "frontier-policy",
     "name": "@shapeshift-labs/frontier-policy",
     "role": "Serializable policy and capability decisions for Frontier apps, effects, views, sync, routes, traces, and AI tools.",
@@ -304,6 +312,14 @@ if (!delegated) {
     "repoUrl": "https://github.com/siliconjungle/-shapeshift-labs-frontier-view"
   },
   {
+    "id": "frontier-icons",
+    "name": "@shapeshift-labs/frontier-icons",
+    "role": "Renderer-neutral icon records, icon sets, lookup aliases, SVG frames, string rendering, and registry evidence for Frontier apps.",
+    "npmUrl": "https://www.npmjs.com/package/@shapeshift-labs/frontier-icons",
+    "repoName": "siliconjungle/-shapeshift-labs-frontier-icons",
+    "repoUrl": "https://github.com/siliconjungle/-shapeshift-labs-frontier-icons"
+  },
+  {
     "id": "frontier-design",
     "name": "@shapeshift-labs/frontier-design",
     "role": "Renderer-neutral design-system tokens, semantic roles, recipes, target style frames, CSS variable output, and registry graph evidence for Frontier apps.",
@@ -326,6 +342,14 @@ if (!delegated) {
     "npmUrl": "https://www.npmjs.com/package/@shapeshift-labs/frontier-canvas-tools",
     "repoName": "siliconjungle/-shapeshift-labs-frontier-canvas-tools",
     "repoUrl": "https://github.com/siliconjungle/-shapeshift-labs-frontier-canvas-tools"
+  },
+  {
+    "id": "frontier-dnd",
+    "name": "@shapeshift-labs/frontier-dnd",
+    "role": "Renderer-neutral drag-and-drop sessions, sensor descriptors, collision ranking, drop planning, reorder patches, state partitioning, and registry evidence for Frontier apps.",
+    "npmUrl": "https://www.npmjs.com/package/@shapeshift-labs/frontier-dnd",
+    "repoName": "siliconjungle/-shapeshift-labs-frontier-dnd",
+    "repoUrl": "https://github.com/siliconjungle/-shapeshift-labs-frontier-dnd"
   },
   {
     "id": "frontier-dom",
@@ -352,6 +376,30 @@ if (!delegated) {
     "repoUrl": "https://github.com/siliconjungle/-shapeshift-labs-frontier-test"
   },
   {
+    "id": "frontier-component-preview",
+    "name": "@shapeshift-labs/frontier-component-preview",
+    "role": "Frontier-native component preview books, generated preview manifests, stateful variants, Vite virtual modules, standalone browser preview shells, inspector bridges, and preview harness evidence for Frontier apps.",
+    "npmUrl": "https://www.npmjs.com/package/@shapeshift-labs/frontier-component-preview",
+    "repoName": "siliconjungle/-shapeshift-labs-frontier-component-preview",
+    "repoUrl": "https://github.com/siliconjungle/-shapeshift-labs-frontier-component-preview"
+  },
+  {
+    "id": "frontier-documentation",
+    "name": "@shapeshift-labs/frontier-documentation",
+    "role": "Frontier-native documentation manifests, generated documentation books, package/API/source discovery, Vite virtual modules, standalone browser docs shells, inspector bridges, search indexes, and documentation harness evidence for Frontier apps and packages.",
+    "npmUrl": "https://www.npmjs.com/package/@shapeshift-labs/frontier-documentation",
+    "repoName": "siliconjungle/-shapeshift-labs-frontier-documentation",
+    "repoUrl": "https://github.com/siliconjungle/-shapeshift-labs-frontier-documentation"
+  },
+  {
+    "id": "frontier-ast-walk",
+    "name": "@shapeshift-labs/frontier-ast-walk",
+    "role": "Dependency-light source graph, import/export/declaration/call analysis, Frontier package-use discovery, and business-logic placement findings for Frontier tools, apps, docs, fuzzers, benchmarks, and agent evidence.",
+    "npmUrl": "https://www.npmjs.com/package/@shapeshift-labs/frontier-ast-walk",
+    "repoName": "siliconjungle/-shapeshift-labs-frontier-ast-walk",
+    "repoUrl": "https://github.com/siliconjungle/-shapeshift-labs-frontier-ast-walk"
+  },
+  {
     "id": "frontier-history",
     "name": "@shapeshift-labs/frontier-history",
     "role": "Serializable temporal explanation and causality records for Frontier apps, including field-change explanations, action/workflow/policy/effect/trace/test provenance, audit windows, undo planning, registry/provenance graph output, JSONL replay bundles, and proof hashes.",
@@ -374,6 +422,14 @@ if (!delegated) {
     "npmUrl": "https://www.npmjs.com/package/@shapeshift-labs/frontier-linter",
     "repoName": "siliconjungle/-shapeshift-labs-frontier-linter",
     "repoUrl": "https://github.com/siliconjungle/-shapeshift-labs-frontier-linter"
+  },
+  {
+    "id": "frontier-framework",
+    "name": "@shapeshift-labs/frontier-framework",
+    "role": "High-level app framework package for Frontier applications, including configuration, CLI scaffolding, Vite builds, monorepo layout, TSX route builds, split frontend/backend deploy artifacts, backend-neutral Fetch handler and sync transport contracts, runtime data-source migrations, devtools, harness gates, agent MCP/tool manifests, CI evidence gates, workflow manifests, SARIF/linter output, replay scripts, and evidence manifest output.",
+    "npmUrl": "https://www.npmjs.com/package/@shapeshift-labs/frontier-framework",
+    "repoName": "siliconjungle/-shapeshift-labs-frontier-framework",
+    "repoUrl": "https://github.com/siliconjungle/-shapeshift-labs-frontier-framework"
   },
   {
     "id": "frontier-crdt",
