@@ -184,6 +184,14 @@ if (!delegated) {
     "repoUrl": "https://github.com/siliconjungle/-shapeshift-labs-frontier-policy"
   },
   {
+    "id": "frontier-flags",
+    "name": "@shapeshift-labs/frontier-flags",
+    "role": "Patchable policy-aware feature flag state for Frontier apps, including targeting, deterministic rollouts, experiment variants, kill switches, exposure records, audit logs, and replay evidence.",
+    "npmUrl": "https://www.npmjs.com/package/@shapeshift-labs/frontier-flags",
+    "repoName": "siliconjungle/-shapeshift-labs-frontier-flags",
+    "repoUrl": "https://github.com/siliconjungle/-shapeshift-labs-frontier-flags"
+  },
+  {
     "id": "frontier-tools",
     "name": "@shapeshift-labs/frontier-tools",
     "role": "Serializable app action/tool manifests for AI-operable Frontier apps, including availability, validation, dry-run plans, patch previews, effect/tool constraints, execution records, rollback links, and registry graph output.",
@@ -224,6 +232,86 @@ if (!delegated) {
     "repoUrl": "https://github.com/siliconjungle/-shapeshift-labs-frontier-worker"
   },
   {
+    "id": "frontier-queue",
+    "name": "@shapeshift-labs/frontier-queue",
+    "role": "Serializable durable queue state, leases, retries, dedupe keys, patch-carrying jobs, dead-letter records, replay evidence, and queue inspection for Frontier apps.",
+    "npmUrl": "https://www.npmjs.com/package/@shapeshift-labs/frontier-queue",
+    "repoName": "siliconjungle/-shapeshift-labs-frontier-queue",
+    "repoUrl": "https://github.com/siliconjungle/-shapeshift-labs-frontier-queue"
+  },
+  {
+    "id": "frontier-swarm",
+    "name": "@shapeshift-labs/frontier-swarm",
+    "role": "Hierarchical swarm plans, lanes, compute profiles, ownership policy, semantic ownership regions, task queues, event streams, run records, merge bundles, changed-path checks, and proof artifacts for Frontier agent work.",
+    "npmUrl": "https://www.npmjs.com/package/@shapeshift-labs/frontier-swarm",
+    "repoName": "siliconjungle/-shapeshift-labs-frontier-swarm",
+    "repoUrl": "https://github.com/siliconjungle/-shapeshift-labs-frontier-swarm"
+  },
+  {
+    "id": "frontier-swarm-codex",
+    "name": "@shapeshift-labs/frontier-swarm-codex",
+    "role": "Node Codex CLI adapter for Frontier swarm plans, including prompt rendering, worktree and snapshot workspaces, Codex argument compatibility, JSONL capture, verification commands, pid-backed stop, collect buckets, merge bundles, and result artifacts.",
+    "npmUrl": "https://www.npmjs.com/package/@shapeshift-labs/frontier-swarm-codex",
+    "repoName": "siliconjungle/-shapeshift-labs-frontier-swarm-codex",
+    "repoUrl": "https://github.com/siliconjungle/-shapeshift-labs-frontier-swarm-codex"
+  },
+  {
+    "id": "frontier-kv",
+    "name": "@shapeshift-labs/frontier-kv",
+    "role": "Serializable in-memory key/value state for Frontier apps, including TTL, versioned compare-and-set, batched patch mutations, scans, watchers, snapshots, JSONL event evidence, and replay verification.",
+    "npmUrl": "https://www.npmjs.com/package/@shapeshift-labs/frontier-kv",
+    "repoName": "siliconjungle/-shapeshift-labs-frontier-kv",
+    "repoUrl": "https://github.com/siliconjungle/-shapeshift-labs-frontier-kv"
+  },
+  {
+    "id": "frontier-kv-locks",
+    "name": "@shapeshift-labs/frontier-kv-locks",
+    "role": "Lease-style lock records on top of Frontier KV, including acquire, renew, release, fencing tokens, expiration, owner evidence, and replayable lock events.",
+    "npmUrl": "https://www.npmjs.com/package/@shapeshift-labs/frontier-kv-locks",
+    "repoName": "siliconjungle/-shapeshift-labs-frontier-kv-locks",
+    "repoUrl": "https://github.com/siliconjungle/-shapeshift-labs-frontier-kv-locks"
+  },
+  {
+    "id": "frontier-kv-rate-limit",
+    "name": "@shapeshift-labs/frontier-kv-rate-limit",
+    "role": "Patch-native rate limit buckets for Frontier KV, including fixed windows, sliding windows, token buckets, deterministic refill, consume evidence, and reset records.",
+    "npmUrl": "https://www.npmjs.com/package/@shapeshift-labs/frontier-kv-rate-limit",
+    "repoName": "siliconjungle/-shapeshift-labs-frontier-kv-rate-limit",
+    "repoUrl": "https://github.com/siliconjungle/-shapeshift-labs-frontier-kv-rate-limit"
+  },
+  {
+    "id": "frontier-kv-file",
+    "name": "@shapeshift-labs/frontier-kv-file",
+    "role": "Node file persistence adapter for Frontier KV snapshots and append-only JSONL event logs, including atomic writes, compaction, replay loading, and adapter evidence.",
+    "npmUrl": "https://www.npmjs.com/package/@shapeshift-labs/frontier-kv-file",
+    "repoName": "siliconjungle/-shapeshift-labs-frontier-kv-file",
+    "repoUrl": "https://github.com/siliconjungle/-shapeshift-labs-frontier-kv-file"
+  },
+  {
+    "id": "frontier-kv-idb",
+    "name": "@shapeshift-labs/frontier-kv-idb",
+    "role": "IndexedDB persistence adapter for Frontier KV snapshots and event logs, with structural IDB interfaces, upgrade planning, compact event storage, and replay loading.",
+    "npmUrl": "https://www.npmjs.com/package/@shapeshift-labs/frontier-kv-idb",
+    "repoName": "siliconjungle/-shapeshift-labs-frontier-kv-idb",
+    "repoUrl": "https://github.com/siliconjungle/-shapeshift-labs-frontier-kv-idb"
+  },
+  {
+    "id": "frontier-kv-redis",
+    "name": "@shapeshift-labs/frontier-kv-redis",
+    "role": "Redis-compatible command planning and structural client adapter for Frontier KV operations, including key mapping, TTL commands, optimistic CAS scripts, and replay evidence without bundling Redis drivers.",
+    "npmUrl": "https://www.npmjs.com/package/@shapeshift-labs/frontier-kv-redis",
+    "repoName": "siliconjungle/-shapeshift-labs-frontier-kv-redis",
+    "repoUrl": "https://github.com/siliconjungle/-shapeshift-labs-frontier-kv-redis"
+  },
+  {
+    "id": "frontier-kv-server",
+    "name": "@shapeshift-labs/frontier-kv-server",
+    "role": "Small Node HTTP server adapter for Frontier KV, including request planning, JSON endpoints for get/set/delete/scan/batch, optional rate-limit hooks, and replayable response evidence.",
+    "npmUrl": "https://www.npmjs.com/package/@shapeshift-labs/frontier-kv-server",
+    "repoName": "siliconjungle/-shapeshift-labs-frontier-kv-server",
+    "repoUrl": "https://github.com/siliconjungle/-shapeshift-labs-frontier-kv-server"
+  },
+  {
     "id": "frontier-assets",
     "name": "@shapeshift-labs/frontier-assets",
     "role": "Serializable asset and content provenance graphs for Frontier apps, including source files, generated variants, thumbnails, LOD chunks, shader/material dependencies, transforms, hashes, owners, runtime consumers, review plans, registry graph output, and impact queries.",
@@ -254,6 +342,14 @@ if (!delegated) {
     "npmUrl": "https://www.npmjs.com/package/@shapeshift-labs/frontier-virtual",
     "repoName": "siliconjungle/-shapeshift-labs-frontier-virtual",
     "repoUrl": "https://github.com/siliconjungle/-shapeshift-labs-frontier-virtual"
+  },
+  {
+    "id": "frontier-table",
+    "name": "@shapeshift-labs/frontier-table",
+    "role": "Renderer-neutral data grid and table primitives for Frontier apps, including stable row identity, sorting, filtering, selection, virtual ranges, patch-driven edits, cache/dataflow descriptors, and CRDT-compatible row and cell operation frames.",
+    "npmUrl": "https://www.npmjs.com/package/@shapeshift-labs/frontier-table",
+    "repoName": "siliconjungle/-shapeshift-labs-frontier-table",
+    "repoUrl": "https://github.com/siliconjungle/-shapeshift-labs-frontier-table"
   },
   {
     "id": "frontier-scene",
@@ -374,6 +470,14 @@ if (!delegated) {
     "npmUrl": "https://www.npmjs.com/package/@shapeshift-labs/frontier-test",
     "repoName": "siliconjungle/-shapeshift-labs-frontier-test",
     "repoUrl": "https://github.com/siliconjungle/-shapeshift-labs-frontier-test"
+  },
+  {
+    "id": "frontier-fixtures",
+    "name": "@shapeshift-labs/frontier-fixtures",
+    "role": "Deterministic fixture and scenario generation for Frontier apps, including schema-valid sample state, related entity collections, actor personas, route states, replay-verified patch streams, event records, JSONL bundles, and evidence summaries.",
+    "npmUrl": "https://www.npmjs.com/package/@shapeshift-labs/frontier-fixtures",
+    "repoName": "siliconjungle/-shapeshift-labs-frontier-fixtures",
+    "repoUrl": "https://github.com/siliconjungle/-shapeshift-labs-frontier-fixtures"
   },
   {
     "id": "frontier-component-preview",
