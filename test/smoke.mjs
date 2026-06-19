@@ -1,5 +1,7 @@
 import assert from 'node:assert';
 import {
+  FRONTIER_MANIFEST_AUTONOMOUS_CAPACITY_KIND,
+  createAutonomousCapacityManifest,
   createManifest,
   createManifestFeatureMap,
   createManifestProof,
@@ -246,5 +248,109 @@ assert.deepStrictEqual(focusedResourceImpact.taskIds, ['task.focused.test']);
 const emptyImpact = manifestImpact(focusedManifest, {});
 assert.deepStrictEqual(emptyImpact.entryIds, []);
 assert.deepStrictEqual(emptyImpact.taskIds, []);
+
+const autonomousCapacity = createAutonomousCapacityManifest({
+  generatedAt: 456,
+  metadata: { scope: 'generic-autonomous-control-plane' },
+  lanes: [
+    {
+      id: 'autonomous-merge',
+      name: 'Autonomous merge',
+      description: 'Lease-backed agent lane for applying reviewed merge bundles.',
+      maxConcurrency: 4,
+      activeLeases: [
+        {
+          id: 'lease.agent-a',
+          holder: 'agent-a',
+          taskId: 'merge.bundle-a',
+          acquiredAt: 100,
+          expiresAt: 200
+        },
+        {
+          id: 'lease.agent-b',
+          holder: 'agent-b',
+          taskId: 'merge.bundle-b',
+          status: 'renewing'
+        }
+      ],
+      queueSource: {
+        id: 'merge-queue',
+        kind: 'jsonl',
+        uri: 'queue://autonomous-merge',
+        pollIntervalMs: 5000
+      },
+      modelProfile: {
+        id: 'deep-agent',
+        provider: 'portable-ai-provider',
+        model: 'large-reasoning',
+        compute: 'deep',
+        runtime: 'codex-like',
+        contextTokens: 200000,
+        maxOutputTokens: 16000,
+        metadata: {
+          pricing: {
+            currency: 'USD',
+            unitTokens: 1000000,
+            inputUsdPerUnit: 5,
+            outputUsdPerUnit: 30
+          }
+        }
+      },
+      drainPolicy: {
+        mode: 'continuous',
+        allowNewLeases: true,
+        stopWhenQueueEmpty: false,
+        routineReview: 'non-blocking',
+        humanBlockers: ['explicit-human-question']
+      },
+      tags: ['agent', 'swarm', 'autonomous-merge']
+    }
+  ]
+});
+assert.strictEqual(autonomousCapacity.kind, FRONTIER_MANIFEST_AUTONOMOUS_CAPACITY_KIND);
+assert.strictEqual(autonomousCapacity.totalMaxConcurrency, 4);
+assert.strictEqual(autonomousCapacity.totalActiveLeases, 2);
+assert.strictEqual(autonomousCapacity.totalAvailableConcurrency, 2);
+assert.strictEqual(autonomousCapacity.lanes[0].queueSource.kind, 'jsonl');
+assert.strictEqual(autonomousCapacity.lanes[0].modelProfile.model, 'large-reasoning');
+assert.strictEqual(autonomousCapacity.lanes[0].drainPolicy.routineReview, 'non-blocking');
+assert.deepStrictEqual(autonomousCapacity.lanes[0].drainPolicy.humanBlockers, ['explicit-human-question']);
+
+const autonomousMergeManifest = createManifest({
+  metadata: { autonomousCapacity },
+  entries: [
+    {
+      id: 'capacity.autonomous-merge',
+      kind: 'capacity',
+      name: 'Autonomous merge capacity',
+      feature: 'autonomous-merge',
+      resources: ['queue:autonomous-merge'],
+      tags: ['agent', 'swarm', 'autonomous-merge'],
+      metadata: {
+        autonomousCapacityLane: autonomousCapacity.lanes[0]
+      }
+    }
+  ],
+  tasks: [
+    {
+      id: 'task.autonomous-merge.drain',
+      feature: 'autonomous-merge',
+      inputs: ['queues/autonomous-merge/**'],
+      tags: ['agent', 'autonomous-merge'],
+      metadata: {
+        drainPolicy: autonomousCapacity.lanes[0].drainPolicy
+      }
+    }
+  ]
+});
+assert.deepStrictEqual(validateManifest(autonomousMergeManifest).filter((diagnostic) => diagnostic.severity === 'error'), []);
+assert.strictEqual(autonomousMergeManifest.summary.kindCounts.capacity, 1);
+assert.strictEqual(autonomousMergeManifest.summary.resourceCount, 1);
+assert.deepStrictEqual(queryManifest(autonomousMergeManifest, { tags: ['autonomous-merge'] }).entries.map((entry) => entry.id), [
+  'capacity.autonomous-merge'
+]);
+assert.deepStrictEqual(manifestImpact(autonomousMergeManifest, { changedFiles: ['queues/autonomous-merge/bundle.json'] }).taskIds, [
+  'task.autonomous-merge.drain'
+]);
 
 console.log('frontier manifest smoke passed');

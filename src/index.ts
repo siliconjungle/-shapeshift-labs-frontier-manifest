@@ -25,6 +25,8 @@ export const FRONTIER_MANIFEST_JSONL_KIND = 'frontier.manifest.jsonl';
 export const FRONTIER_MANIFEST_JSONL_VERSION = 1;
 export const FRONTIER_MANIFEST_PROOF_KIND = 'frontier.manifest.proof';
 export const FRONTIER_MANIFEST_PROOF_VERSION = 1;
+export const FRONTIER_MANIFEST_AUTONOMOUS_CAPACITY_KIND = 'frontier.manifest.autonomous-capacity';
+export const FRONTIER_MANIFEST_AUTONOMOUS_CAPACITY_VERSION = 1;
 
 export type FrontierManifestEntryKind =
   | 'feature'
@@ -40,6 +42,7 @@ export type FrontierManifestEntryKind =
   | 'task'
   | 'package'
   | 'resource'
+  | 'capacity'
   | 'component'
   | 'effect'
   | 'trigger'
@@ -349,6 +352,129 @@ export interface FrontierManifestProof {
   fileCount: number;
   assetCount: number;
   resourceCount: number;
+}
+
+export interface FrontierManifestAutonomousCapacityInput {
+  generatedAt?: number;
+  lanes?: readonly FrontierManifestAutonomousCapacityLaneInput[];
+  metadata?: unknown;
+}
+
+export interface FrontierManifestAutonomousCapacityLaneInput {
+  id: string;
+  name?: string;
+  description?: string;
+  maxConcurrency: number;
+  activeLeases?: readonly FrontierManifestAutonomousLeaseInput[];
+  queueSource?: FrontierManifestAutonomousQueueSourceInput;
+  modelProfile?: FrontierManifestAutonomousModelProfileInput;
+  drainPolicy?: FrontierManifestAutonomousDrainPolicyInput;
+  tags?: readonly string[];
+  metadata?: unknown;
+}
+
+export interface FrontierManifestAutonomousLeaseInput {
+  id: string;
+  holder?: string;
+  taskId?: string;
+  status?: string;
+  acquiredAt?: number;
+  expiresAt?: number;
+  metadata?: unknown;
+}
+
+export interface FrontierManifestAutonomousQueueSourceInput {
+  id?: string;
+  kind?: string;
+  uri?: string;
+  description?: string;
+  pollIntervalMs?: number;
+  metadata?: unknown;
+}
+
+export interface FrontierManifestAutonomousModelProfileInput {
+  id?: string;
+  provider?: string;
+  model?: string;
+  compute?: string;
+  runtime?: string;
+  contextTokens?: number;
+  maxOutputTokens?: number;
+  metadata?: unknown;
+}
+
+export interface FrontierManifestAutonomousDrainPolicyInput {
+  mode?: string;
+  allowNewLeases?: boolean;
+  stopWhenQueueEmpty?: boolean;
+  routineReview?: string;
+  humanBlockers?: readonly string[];
+  metadata?: unknown;
+}
+
+export interface FrontierManifestAutonomousCapacity {
+  kind: typeof FRONTIER_MANIFEST_AUTONOMOUS_CAPACITY_KIND;
+  version: typeof FRONTIER_MANIFEST_AUTONOMOUS_CAPACITY_VERSION;
+  generatedAt?: number;
+  lanes: FrontierManifestAutonomousCapacityLane[];
+  totalMaxConcurrency: number;
+  totalActiveLeases: number;
+  totalAvailableConcurrency: number;
+  metadata?: JsonObject;
+}
+
+export interface FrontierManifestAutonomousCapacityLane {
+  id: string;
+  name?: string;
+  description?: string;
+  maxConcurrency: number;
+  activeLeaseCount: number;
+  availableConcurrency: number;
+  activeLeases: FrontierManifestAutonomousLease[];
+  queueSource?: FrontierManifestAutonomousQueueSource;
+  modelProfile?: FrontierManifestAutonomousModelProfile;
+  drainPolicy: FrontierManifestAutonomousDrainPolicy;
+  tags: string[];
+  metadata?: JsonObject;
+}
+
+export interface FrontierManifestAutonomousLease {
+  id: string;
+  holder?: string;
+  taskId?: string;
+  status: string;
+  acquiredAt?: number;
+  expiresAt?: number;
+  metadata?: JsonObject;
+}
+
+export interface FrontierManifestAutonomousQueueSource {
+  id?: string;
+  kind: string;
+  uri?: string;
+  description?: string;
+  pollIntervalMs?: number;
+  metadata?: JsonObject;
+}
+
+export interface FrontierManifestAutonomousModelProfile {
+  id?: string;
+  provider?: string;
+  model?: string;
+  compute?: string;
+  runtime?: string;
+  contextTokens?: number;
+  maxOutputTokens?: number;
+  metadata?: JsonObject;
+}
+
+export interface FrontierManifestAutonomousDrainPolicy {
+  mode: string;
+  allowNewLeases: boolean;
+  stopWhenQueueEmpty: boolean;
+  routineReview: string;
+  humanBlockers: string[];
+  metadata?: JsonObject;
 }
 
 interface ManifestIndex {
@@ -799,6 +925,28 @@ export function createManifestProof(manifest: FrontierManifest): FrontierManifes
   };
 }
 
+export function createAutonomousCapacityManifest(input: FrontierManifestAutonomousCapacityInput = {}): FrontierManifestAutonomousCapacity {
+  const lanes = (input.lanes ?? []).map(normalizeAutonomousCapacityLane);
+  let totalMaxConcurrency = 0;
+  let totalActiveLeases = 0;
+  let totalAvailableConcurrency = 0;
+  for (const lane of lanes) {
+    totalMaxConcurrency += lane.maxConcurrency;
+    totalActiveLeases += lane.activeLeaseCount;
+    totalAvailableConcurrency += lane.availableConcurrency;
+  }
+  return {
+    kind: FRONTIER_MANIFEST_AUTONOMOUS_CAPACITY_KIND,
+    version: FRONTIER_MANIFEST_AUTONOMOUS_CAPACITY_VERSION,
+    generatedAt: input.generatedAt,
+    lanes,
+    totalMaxConcurrency,
+    totalActiveLeases,
+    totalAvailableConcurrency,
+    metadata: cloneJsonObject(input.metadata)
+  };
+}
+
 export function normalizeManifestResource(resource: string, fallbackScheme = 'manifest'): string {
   const value = normalizeId(resource, 'manifest resource');
   if (/^[a-z][a-z0-9+.-]*:/i.test(value)) return value;
@@ -892,6 +1040,75 @@ function normalizeTask(input: FrontierManifestTaskInput): FrontierManifestTask {
     env: normalizeStringList(input.env),
     tags: normalizeStringList(input.tags),
     metadata: cloneJsonObject(input.metadata)
+  };
+}
+
+function normalizeAutonomousCapacityLane(input: FrontierManifestAutonomousCapacityLaneInput): FrontierManifestAutonomousCapacityLane {
+  const maxConcurrency = normalizeNonNegativeInteger(input.maxConcurrency, 'autonomous capacity lane max concurrency');
+  const activeLeases = (input.activeLeases ?? []).map(normalizeAutonomousLease);
+  const activeLeaseCount = activeLeases.length;
+  return {
+    id: normalizeId(input.id, 'autonomous capacity lane id'),
+    name: normalizeOptionalString(input.name),
+    description: normalizeOptionalString(input.description),
+    maxConcurrency,
+    activeLeaseCount,
+    availableConcurrency: Math.max(0, maxConcurrency - activeLeaseCount),
+    activeLeases,
+    queueSource: normalizeAutonomousQueueSource(input.queueSource),
+    modelProfile: normalizeAutonomousModelProfile(input.modelProfile),
+    drainPolicy: normalizeAutonomousDrainPolicy(input.drainPolicy),
+    tags: normalizeStringList(input.tags),
+    metadata: cloneJsonObject(input.metadata)
+  };
+}
+
+function normalizeAutonomousLease(input: FrontierManifestAutonomousLeaseInput): FrontierManifestAutonomousLease {
+  return {
+    id: normalizeId(input.id, 'autonomous capacity lease id'),
+    holder: normalizeOptionalString(input.holder),
+    taskId: normalizeOptionalString(input.taskId),
+    status: normalizeOptionalString(input.status) ?? 'active',
+    acquiredAt: normalizeOptionalNonNegativeInteger(input.acquiredAt, 'autonomous capacity lease acquiredAt'),
+    expiresAt: normalizeOptionalNonNegativeInteger(input.expiresAt, 'autonomous capacity lease expiresAt'),
+    metadata: cloneJsonObject(input.metadata)
+  };
+}
+
+function normalizeAutonomousQueueSource(input: FrontierManifestAutonomousQueueSourceInput | undefined): FrontierManifestAutonomousQueueSource | undefined {
+  if (input === undefined) return undefined;
+  return {
+    id: normalizeOptionalString(input.id),
+    kind: normalizeOptionalString(input.kind) ?? 'custom',
+    uri: normalizeOptionalString(input.uri),
+    description: normalizeOptionalString(input.description),
+    pollIntervalMs: normalizeOptionalNonNegativeInteger(input.pollIntervalMs, 'autonomous capacity queue poll interval'),
+    metadata: cloneJsonObject(input.metadata)
+  };
+}
+
+function normalizeAutonomousModelProfile(input: FrontierManifestAutonomousModelProfileInput | undefined): FrontierManifestAutonomousModelProfile | undefined {
+  if (input === undefined) return undefined;
+  return {
+    id: normalizeOptionalString(input.id),
+    provider: normalizeOptionalString(input.provider),
+    model: normalizeOptionalString(input.model),
+    compute: normalizeOptionalString(input.compute),
+    runtime: normalizeOptionalString(input.runtime),
+    contextTokens: normalizeOptionalNonNegativeInteger(input.contextTokens, 'autonomous capacity model context tokens'),
+    maxOutputTokens: normalizeOptionalNonNegativeInteger(input.maxOutputTokens, 'autonomous capacity model max output tokens'),
+    metadata: cloneJsonObject(input.metadata)
+  };
+}
+
+function normalizeAutonomousDrainPolicy(input: FrontierManifestAutonomousDrainPolicyInput | undefined): FrontierManifestAutonomousDrainPolicy {
+  return {
+    mode: normalizeOptionalString(input?.mode) ?? 'continuous',
+    allowNewLeases: input?.allowNewLeases ?? true,
+    stopWhenQueueEmpty: input?.stopWhenQueueEmpty ?? false,
+    routineReview: normalizeOptionalString(input?.routineReview) ?? 'non-blocking',
+    humanBlockers: normalizeStringList(input?.humanBlockers),
+    metadata: cloneJsonObject(input?.metadata)
   };
 }
 
@@ -1485,6 +1702,16 @@ function normalizeId(value: unknown, label: string): string {
   const out = String(value ?? '').trim();
   if (out.length === 0) throw new TypeError(label + ' must be a non-empty string');
   return out;
+}
+
+function normalizeNonNegativeInteger(value: unknown, label: string): number {
+  const out = Number(value);
+  if (!Number.isFinite(out) || out < 0) throw new TypeError(label + ' must be a non-negative finite number');
+  return Math.floor(out);
+}
+
+function normalizeOptionalNonNegativeInteger(value: unknown, label: string): number | undefined {
+  return value === undefined || value === null ? undefined : normalizeNonNegativeInteger(value, label);
 }
 
 function normalizeOptionalString(value: unknown): string | undefined {

@@ -12,6 +12,7 @@ It is intentionally runtime-neutral. Compilers, bundlers, route packages, DOM pa
 
 ```ts
 import {
+  createAutonomousCapacityManifest,
   createManifest,
   createManifestFeatureMap,
   createManifestProof,
@@ -71,6 +72,27 @@ const manifest = createManifest({
   ]
 });
 
+const autonomousCapacity = createAutonomousCapacityManifest({
+  lanes: [
+    {
+      id: 'autonomous-merge',
+      maxConcurrency: 4,
+      activeLeases: [
+        { id: 'lease.agent-a', holder: 'agent-a', taskId: 'merge.bundle-a' },
+        { id: 'lease.agent-b', holder: 'agent-b', taskId: 'merge.bundle-b' }
+      ],
+      queueSource: { kind: 'jsonl', uri: 'queue://autonomous-merge' },
+      modelProfile: { id: 'deep-agent', provider: 'portable-ai-provider', model: 'large-reasoning' },
+      drainPolicy: {
+        mode: 'continuous',
+        routineReview: 'non-blocking',
+        humanBlockers: ['explicit-human-question']
+      },
+      tags: ['agent', 'swarm', 'autonomous-merge']
+    }
+  ]
+});
+
 const byFile = queryManifest(manifest, { files: ['src/todos/load.ts'] });
 const impact = manifestImpact(manifest, { changedFiles: ['src/todos/load.ts'] });
 const featureMap = createManifestFeatureMap(manifest);
@@ -86,12 +108,20 @@ void registryGraph;
 void jsonl;
 void proof;
 void ownerRules;
+void autonomousCapacity;
 ```
+
+## Autonomous Capacity Fragment
+
+`createAutonomousCapacityManifest` produces a dependency-light JSON fragment for autonomous worker capacity. Each lane records `maxConcurrency`, current `activeLeases`, an optional `queueSource`, an optional `modelProfile`, and a `drainPolicy`. The shape is structural rather than Frontier-repository-specific, so an app can store it in manifest metadata, an inspect bundle, a queue dashboard, or any other JSON artifact.
+
+The default drain policy is continuous: `allowNewLeases` is `true`, `stopWhenQueueEmpty` is `false`, and `routineReview` is `non-blocking`. This lets always-on workers keep accepting routine queue work while coordinator review is pending. Hosts that need human input should declare concrete `humanBlockers`, such as `explicit-human-question`, instead of treating ordinary coordinator review as a human blocker.
 
 ## Design Notes
 
 - Entries are plain JSON-like records for features, routes, scenes, actions, states, migrations, tests, sources, assets, packages, effects, triggers, components, and custom app surfaces.
 - Build tasks record commands, input globs, output globs, environment dependencies, owners, feature/package ids, and task dependency edges.
+- Autonomous capacity fragments record lanes, max concurrency, active leases, queue sources, model profiles, and drain policies without importing swarm, queue, worker, scheduler, or model-provider packages.
 - CODEOWNERS parsing uses last-match ownership per file and unions owners across multi-file entries or tasks.
 - Glob matching supports `*`, `**`, `?`, leading slash normalization, and `!` exclusion patterns for task inputs.
 - Query and impact APIs use lazy manifest indexes for exact feature, package, owner, file, asset, route, action, state, migration, test, resource, and tag lookups.
